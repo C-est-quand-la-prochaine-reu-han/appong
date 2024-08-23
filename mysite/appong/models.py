@@ -21,7 +21,6 @@ class Match(models.Model):
 	player2_score = models.IntegerField(default=0)
 	ball_max_speed = models.IntegerField(default=0)
 	match_runtime = models.IntegerField(default=0)
-	votes = models.IntegerField(default=0)
 
 
 class Tournament(models.Model):
