@@ -1,2 +1,3 @@
-<h3>User_nick: {{ userprofile.user_nick }}</h3>
-<h3>Avatar: {{ userprofile.avatar }}</h3>
+<h3>User_nick: {{ user_nick }}</h3>
+{% load static %}
+<img src="{% static user_avatar %}" style="height: 150px;">

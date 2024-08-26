@@ -1,9 +1,15 @@
 from django.urls import path, include
 from . import views
 
+from rest_framework import routers
+
 app_name = "appong"
+
+# Routers provide an easy way of automatically determining the URL conf.
+router = routers.DefaultRouter()
+router.register(r'users', views.UserProfileViewSet)
+
 urlpatterns = [
-	path("", views.User_Index.as_view(), name="users"),
-	path("<int:userprofile_id>/", views.User_Detail, name="detail"),
-	#path("<int:pk>/", views.User_Detail.as_view(), name="detail"),
+	path("api/", include(router.urls)),
+	path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 	]

@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+
 #from imagekit.models import ImageSpecField
 #from imagekit.processors import ResizeToFill
 
@@ -7,7 +8,6 @@ class UserProfile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
 	user_nick = models.CharField(max_length=30)
 	avatar = models.ImageField(default="default_avatar.jpg")
-#	avatar_thumbnail = ImageSpecField(source='avatar', processors=[ResizeToFill(100, 50)], format='JPEG', options={'quality': 60})
 	friends_confirmed = models.ManyToManyField(blank=True, to="UserProfile", related_name="friend_conf")
 	friends_pending = models.ManyToManyField(blank=True, to="UserProfile", related_name="friend_pend")
 
