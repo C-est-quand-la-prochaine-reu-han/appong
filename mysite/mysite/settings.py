@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+	'rest_framework',
+	'appong.apps.AppongConfig',
 ]
 
 MIDDLEWARE = [
@@ -112,10 +114,16 @@ USE_I18N = True
 USE_TZ = True
 
 
+MEDIA_ROOT = "media/"
+
+MEDIA_URL = "/media/"
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+
+STATICFILES_DIRS = [BASE_DIR / "static", BASE_DIR / MEDIA_ROOT]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -124,6 +132,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_PROFILE_MODULE = 'appong.UserProfile'
 
-MEDIA_ROOT = "media/"
-
-MEDIA_URL = "/media/"
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}

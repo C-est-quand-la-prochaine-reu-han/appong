@@ -1,0 +1,9 @@
+{% if user_list %}
+    <ul>
+    {% for userprofile in user_list %}
+	<li><a href="{% url 'appong:detail' userprofile.id %}">{{ userprofile.user_nick }}</a></li>  
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No User Profiles are available.</p>
+{% endif %}
