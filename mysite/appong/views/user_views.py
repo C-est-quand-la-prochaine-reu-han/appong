@@ -6,6 +6,8 @@ from django.http import HttpResponse
 from django.contrib.auth.models import User
 from ..models import UserProfile
 
+import datetime
+
 # Serializers define the API representation.
 class UserSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -40,7 +42,6 @@ class UserProfileViewSet(ModelViewSet):
 		new_user.username = request.POST.get("user_nick")
 		new_user.date_joined = datetime.datetime.now()
 		new_user.save()
-
 		new_userprofile = UserProfile()
 		new_userprofile.user = new_user
 		new_userprofile.user_nick = request.POST.get("user_nick")
