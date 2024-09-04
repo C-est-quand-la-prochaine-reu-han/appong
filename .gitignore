@@ -4,3 +4,5 @@ myenv/
 **/**/**/__pycache__/
 mysite/db.sqlite3
 *.nfs*
+mysite/media/*
+!mysite/media/default_avatar.jpg

@@ -1,5 +1,6 @@
 from django.urls import path, include
 from . import views
+# from views.user_views import ResizableImageAPIView
 
 from rest_framework import routers
 

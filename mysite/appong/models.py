@@ -5,8 +5,8 @@ class UserProfile(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	user_nick = models.CharField(max_length=30)
 	avatar = models.ImageField(default="default_avatar.jpg")
-	friends_confirmed = models.ManyToManyField(blank=True, to="UserProfile", related_name="friend_conf")
 	friends_pending = models.ManyToManyField(blank=True, to="UserProfile", related_name="friend_pend")
+	friends_confirmed = models.ManyToManyField(blank=True, to="UserProfile", related_name="friend_conf")
 
 class Match(models.Model):
 	tournament_id = models.ForeignKey(null=True, blank=True, to="Tournament", on_delete=models.CASCADE, related_name="tournament")
