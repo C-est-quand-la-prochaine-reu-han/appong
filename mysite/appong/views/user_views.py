@@ -10,7 +10,7 @@ from django.core.files.base import ContentFile
 
 from django.http import HttpResponse
 from django.contrib.auth.models import User
-from ..models import UserProfile
+from ..models import UserProfile, Friend
 from .serializers import UserProfileSerializer
 
 import datetime
@@ -28,6 +28,7 @@ class UserProfileViewSet(ModelViewSet):
 		instance.user.is_active = False
 		instance.avatar = "default_avatar.jpg"
 		instance.save()
+		# TODO set all friends to NULL
 		#UserProfile.objects.get(pk=pk).delete()
 		return HttpResponse("deleted user pk=%s" % pk)
 
@@ -51,15 +52,32 @@ class UserProfileViewSet(ModelViewSet):
 		return HttpResponse("created user %s" % new_userprofile.user_nick)
 	
 	def update(self, request, pk, *args, **kwargs):
-		if UserProfile.objects.get(pk=pk).user_nick != request.POST.get("user_nick") \
-			and UserProfile.objects.filter(user_nick=request.POST.get("user_nick")):
-			return HttpResponse("User nick '%s' is not available" % request.POST.get("user_nick"))
-
 		update_userprofile = UserProfile.objects.get(pk=pk)
-		update_userprofile.user_nick = request.POST.get("user_nick")
+		update_user_nick = request.POST.get("user_nick")
+
+		if update_userprofile.user_nick != update_user_nick \
+			and UserProfile.objects.filter(user_nick=update_user_nick):
+			return HttpResponse("User nick '%s' is not available" % update_user_nick)
+
+		update_userprofile.user_nick = update_user_nick
 		if "avatar" in request.FILES:
 			# check somehow the file is valid
 			update_userprofile.avatar = request.FILES["avatar"]
+		if request.POST.get("friends.user_1") != '' \
+			and request.POST.get("friends.user_2") != '' \
+			and request.POST.get("friends.status") != '':
+			if request.POST.get("friends.status") == str(Friend.PENDING_STATUS):
+				print("*********%s" % request.POST)
+				update_friend = Friend()
+			else:
+				update_friend = update_userprofile.friends.\
+				filter(user_1__id=request.POST.get("friends.user_1"),\
+				user_2__id=request.POST.get("friends.user_2"))
+			update_friend.user_1 = UserProfile.objects.get(pk=request.POST.get("friends.user_1"))
+			update_friend.user_2 = UserProfile.objects.get(pk=request.POST.get("friends.user_2"))
+			update_friend.status = request.POST.get("status")
+			update_friend.save()
+
 		update_userprofile.save()
 
 		return HttpResponse("updated user pk=%s" % update_userprofile.pk)
