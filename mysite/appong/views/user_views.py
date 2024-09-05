@@ -10,7 +10,7 @@ from django.core.files.base import ContentFile
 
 from django.http import HttpResponse
 from django.contrib.auth.models import User
-from ..models import UserProfile, Friend
+from ..models import UserProfile #, Friend
 from .serializers import UserProfileSerializer
 
 import datetime
@@ -63,24 +63,45 @@ class UserProfileViewSet(ModelViewSet):
 		if "avatar" in request.FILES:
 			# check somehow the file is valid
 			update_userprofile.avatar = request.FILES["avatar"]
-		if request.POST.get("friends.user_1") != '' \
-			and request.POST.get("friends.user_2") != '' \
-			and request.POST.get("friends.status") != '':
-			if request.POST.get("friends.status") == str(Friend.PENDING_STATUS):
-				print("*********%s" % request.POST)
-				update_friend = Friend()
-			else:
-				update_friend = update_userprofile.friends.\
-				filter(user_1__id=request.POST.get("friends.user_1"),\
-				user_2__id=request.POST.get("friends.user_2"))
-			update_friend.user_1 = UserProfile.objects.get(pk=request.POST.get("friends.user_1"))
-			update_friend.user_2 = UserProfile.objects.get(pk=request.POST.get("friends.user_2"))
-			update_friend.status = request.POST.get("status")
-			update_friend.save()
+
+		if "friends_pending" in request.POST:
+			print("-----------%s", request.POST)
+			# self.friend_invite(self, request, pk, *args, **kwargs)
+			for value in request.POST.getlist("friends_pending"):
+				friend_pending = UserProfile.objects.get(pk=value)
+				if update_userprofile.pk == friend_pending.pk:
+					return HttpResponse("%s you can't friend yourself" % friend_pending)
+				if update_userprofile.friends_confirmed.contains(friend_pending):
+					return HttpResponse("%s is already a friend" % friend_pending)
+				if update_userprofile.friends_pending.contains(friend_pending) == False:
+					update_userprofile.friends_pending.add(friend_pending)
+		if "friends_confirmed" in request.POST:
+			for value in request.POST.getlist("friends_confirmed"):
+				friend_confirmed = UserProfile.objects.get(pk=value)
+				if update_userprofile.friends_confirmed.contains(friend_confirmed) == False \
+					and update_userprofile.friends_pending.contains(friend_confirmed):
+					update_userprofile.friends_confirmed.add(friend_confirmed)
+					update_userprofile.friends_pending.remove(friend_confirmed)
+		if "friends_remove" in request.POST:
+			for value in request.POST.getlist("friends_remove"):
+				update_userprofile.friends_pending.remove(UserProfile.objects.get(pk=value))
+				update_userprofile.friends_confirmed.remove(UserProfile.objects.get(pk=value))
 
 		update_userprofile.save()
-
 		return HttpResponse("updated user pk=%s" % update_userprofile.pk)
+
+	# @action(detail=True, methods=['post'])
+	# def friend_invite(self, request, pk, *args, **kwargs):
+	# 	update_userprofile = UserProfile.objects.get(pk=pk)
+	# 	for value in request.POST.getlist("friends_pending"):
+	# 		friend_pending = UserProfile.objects.get(pk=value)
+	# 		if update_userprofile.pk == friend_pending.pk:
+	# 			return HttpResponse("%s you can't friend yourself" % friend_pending)
+	# 		if update_userprofile.friends_confirmed.contains(friend_pending):
+	# 			return HttpResponse("%s is already a friend" % friend_pending)
+	# 		if update_userprofile.friends_pending.contains(friend_pending) == False:
+	# 			update_userprofile.friends_pending.add(friend_pending)
+		# update_userprofile.save()
 
 	def resize_image(self, image):
 		img = Image.open(image)
