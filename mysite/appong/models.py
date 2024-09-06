@@ -7,21 +7,6 @@ class UserProfile(models.Model):
 	avatar = models.ImageField(default="default_avatar.jpg")
 	friends_pending = models.ManyToManyField('self', blank=True, symmetrical=True)
 	friends_confirmed = models.ManyToManyField('self', blank=True, symmetrical=True)
-	friends_remove = models.ManyToManyField('self', blank=True, symmetrical=True)
-	# friends = models.ManyToManyField('self', blank=True, through="Friend", symmetrical=True, related_name='friends')
-
-# class Friend(models.Model):
-# 	NULL_STATUS = 1
-# 	PENDING_STATUS = 2
-# 	CONFIRMED_STATUS = 3
-# 	STATUS_CHOICES = (
-# 		(NULL_STATUS, 'Null'),
-# 		(PENDING_STATUS, 'Pending'),
-# 		(CONFIRMED_STATUS, 'Confirmed'),
-# 	)
-# 	user1 = models.ForeignKey(UserProfile, null=True, blank=True, on_delete=models.CASCADE, related_name="user_1")
-# 	user2 = models.ForeignKey(UserProfile, null=True, blank=True, on_delete=models.CASCADE, related_name="user_2")
-# 	status = models.IntegerField(choices=STATUS_CHOICES, default=NULL_STATUS)
 
 class Match(models.Model):
 	tournament_id = models.ForeignKey(null=True, blank=True, to="Tournament", on_delete=models.CASCADE, related_name="tournament")

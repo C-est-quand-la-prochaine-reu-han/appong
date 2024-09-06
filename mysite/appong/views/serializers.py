@@ -9,15 +9,9 @@ class UserSerializer(serializers.ModelSerializer):
 		model = User
 		fields = ['username']
 
-# class FriendSerializer(serializers.ModelSerializer):
-# 	class Meta:
-# 		model = Friend
-# 		fields = ['user1', 'user2', 'status']
-
 class UserProfileSerializer(serializers.ModelSerializer):
 	user = UserSerializer(required=True)
-	# friends = FriendSerializer(required=True)
 
 	class Meta:
 		model = UserProfile
-		fields = ['pk', 'user', 'user_nick', 'avatar', 'friends_pending', 'friends_confirmed', 'friends_remove']
+		fields = ['pk', 'user', 'user_nick', 'avatar', 'friends_pending', 'friends_confirmed']
