@@ -9,7 +9,9 @@ from django.core.files.base import ContentFile
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from ..models import UserProfile
-from .serializers import UserProfileSerializer
+from .serializers import UserProfileSerializer, FriendSerializer
+
+from django.db import IntegrityError
 
 import datetime
 
@@ -41,27 +43,29 @@ class UserProfileViewSet(ModelViewSet):
 		if "avatar" in request.FILES:
 			self.update_avatar(new_userprofile, request.FILES["avatar"])
 
-		new_user.save()
-		new_userprofile.save()
+		try:
+			new_user.save()
+			new_userprofile.save()
+		except IntegrityError:
+			return HttpResponse("User nick is not available %s" % new_userprofile.user_nick)
 
 		return HttpResponse("created user %s" % new_userprofile.user_nick)
 	
 	def update(self, request, pk, *args, **kwargs):
 		update_userprofile = UserProfile.objects.get(pk=pk)
 		update_user_nick = request.data.get("user_nick")
-
-		if update_userprofile.user_nick != update_user_nick \
-			and UserProfile.objects.filter(user_nick=update_user_nick):
-			return HttpResponse("User nick '%s' is not available" % update_user_nick)
-
 		update_userprofile.user_nick = update_user_nick
 		if "avatar" in request.FILES:
 			self.update_avatar(update_userprofile, request.FILES["avatar"])
 
-		update_userprofile.save()
+		try:
+			update_userprofile.save()
+		except IntegrityError: 
+			return HttpResponse("User nick is not available" % update_userprofile.pk)
+
 		return HttpResponse("updated user pk=%s" % update_userprofile.pk)
 
-	@action(detail=True, methods=['post'])
+	@action(detail=True, methods=['post'], serializer_class=FriendSerializer)
 	def friend_pending(self, request, pk, *args, **kwargs):
 		update_userprofile = UserProfile.objects.get(pk=pk)
 		update_userprofile.friends_pending.clear()
@@ -77,7 +81,7 @@ class UserProfileViewSet(ModelViewSet):
 		update_userprofile.save()
 		return HttpResponse("updated friends_pending for user=%s" % update_userprofile.pk)
 	
-	@action(detail=True, methods=['post'])
+	@action(detail=True, methods=['post'], serializer_class=FriendSerializer)
 	def friend_confirm(self, request, pk, *args, **kwargs):
 		update_userprofile = UserProfile.objects.get(pk=pk)
 		old_friends = update_userprofile.friends_confirmed.values_list()
