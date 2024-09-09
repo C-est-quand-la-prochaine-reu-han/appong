@@ -1,7 +1,5 @@
-from rest_framework import serializers, viewsets, permissions, status
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
+from rest_framework import permissions
+from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action, api_view, permission_classes
 
 from PIL import Image
@@ -10,7 +8,7 @@ from django.core.files.base import ContentFile
 
 from django.http import HttpResponse
 from django.contrib.auth.models import User
-from ..models import UserProfile #, Friend
+from ..models import UserProfile
 from .serializers import UserProfileSerializer
 
 import datetime
@@ -27,10 +25,9 @@ class UserProfileViewSet(ModelViewSet):
 		instance.user_nick = "deaded" + pk
 		instance.user.is_active = False
 		instance.avatar = "default_avatar.jpg"
-		instance.friends_pending.delete()
-		instance.friends_confirmed.delete()
+		instance.friends_pending.clear()
+		instance.friends_confirmed.clear()
 		instance.save()
-		# TODO set all friends to NULL
 		return HttpResponse("deleted user pk=%s" % pk)
 
 	def create(self, request, *args, **kwargs):

@@ -1,30 +1,32 @@
-from rest_framework import serializers, viewsets, permissions
-from rest_framework.viewsets import ReadOnlyModelViewSet
-from rest_framework.decorators import action
+from rest_framework import permissions
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.decorators import action, api_view, permission_classes
 
 from django.http import HttpResponse
-from ..models import Match
+from ..models import Match, UserProfile
+from .serializers import MatchSerializer
 
-# Serializers define the API representation.
+from django.http import HttpResponse
 
-#default user class attributes
-class MatchSerializer(serializers.ModelSerializer):
-	class Meta:
-		model = Match
-		fields = ['pk', 'tournament_id', 'player1', 'player2', 'match_start_time', 'match_end_time', 'player1_hit_nb', 'player2_hit_nb', 'player1_perfect_hit_nb', 'player2_perfect_hit_nb', 'player1_score', 'player2_score', 'ball_max_speed', 'match_status']
-
-def create(self, data):
-	return MatchSerializer.objects.create(**data)
-
-def update(self, instance, data):
-	return instance
-
-#model class-based view to only get (list() and retrieve())
-class MatchViewSet(ReadOnlyModelViewSet):
+class MatchViewSet(ModelViewSet):
 	serializer_class = MatchSerializer
 	queryset = Match.objects.all()
-	permission_classes = [permissions.IsAuthenticated]
+	permission_classes = [permissions.IsAuthenticated]#only logged in users can see data
 
-	#change name instead of deleting profile
 	def delete(self, request, pk, *args, **kwargs):
-		return HttpResponse("deleted %s" % pk)
+		Match.objects.get(pk=pk).delete()
+		return HttpResponse("deleted match pk=%s" % pk)
+
+	def create(self, request, *args, **kwargs):
+		new_match = Match()
+		if "player1" in request.POST == False \
+			or "player2" in request.POST == False :
+				return HttpResponse("You must provide two players for a match")
+		if request.POST.get("player1") == request.POST.get("player2"):
+			return HttpResponse("You cannot play against yourself")
+		new_match.player1 = UserProfile.objects.get(pk=request.POST.get("player1"))
+		new_match.player2 = UserProfile.objects.get(pk=request.POST.get("player2"))
+		# TODO add tournament id if in tournament (otherwise default = NULL)
+		new_match.save()
+
+		return HttpResponse("created match %s" % new_match.pk)
