@@ -1,4 +1,4 @@
-from rest_framework import permissions
+from rest_framework import permissions, status
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action, api_view, permission_classes
 
@@ -30,7 +30,7 @@ class UserProfileViewSet(ModelViewSet):
 		instance.friends_pending.clear()
 		instance.friends_confirmed.clear()
 		instance.save()
-		return HttpResponse("deleted user pk=%s" % pk)
+		return HttpResponse("deleted user pk=%s" % pk, status=status.HTTP_204_NO_CONTENT)
 
 	def create(self, request, *args, **kwargs):
 		new_user = User()
@@ -46,10 +46,10 @@ class UserProfileViewSet(ModelViewSet):
 		try:
 			new_user.save()
 			new_userprofile.save()
-		except IntegrityError:
-			return HttpResponse("User nick is not available %s" % new_userprofile.user_nick)
-
-		return HttpResponse("created user %s" % new_userprofile.user_nick)
+		except IntegrityError as e: #raised by model constraint tourn_name(unique=True)
+			return HttpResponse(e, status=status.HTTP_400_BAD_REQUEST)
+		
+		return HttpResponse("created user %s" % new_userprofile.user_nick, status=status.HTTP_201_CREATED)
 	
 	def update(self, request, pk, *args, **kwargs):
 		update_userprofile = UserProfile.objects.get(pk=pk)
@@ -60,10 +60,10 @@ class UserProfileViewSet(ModelViewSet):
 
 		try:
 			update_userprofile.save()
-		except IntegrityError: 
-			return HttpResponse("User nick is not available" % update_userprofile.pk)
+		except IntegrityError as e: #raised by model constraint tourn_name(unique=True)
+			return HttpResponse(e, status=status.HTTP_400_BAD_REQUEST)
 
-		return HttpResponse("updated user pk=%s" % update_userprofile.pk)
+		return HttpResponse("updated user pk=%s" % update_userprofile.pk, status=status.HTTP_200_OK)
 
 	@action(detail=True, methods=['post'], serializer_class=FriendSerializer)
 	def friend_pending(self, request, pk, *args, **kwargs):
@@ -73,13 +73,13 @@ class UserProfileViewSet(ModelViewSet):
 			for value in request.POST.getlist("friends_pending"):
 				friend_pending = UserProfile.objects.get(pk=value)
 				if update_userprofile.pk == friend_pending.pk:
-					return HttpResponse("%s you can't friend yourself" % friend_pending)
+					return HttpResponse("%s you can't friend yourself" % friend_pending, status=status.HTTP_400_BAD_REQUEST)
 				if update_userprofile.friends_confirmed.contains(friend_pending):
-					return HttpResponse("%s is already a friend" % friend_pending)
+					return HttpResponse("%s is already a friend" % friend_pending, status=status.HTTP_400_BAD_REQUEST)
 				if update_userprofile.friends_pending.contains(friend_pending) == False:
 					update_userprofile.friends_pending.add(friend_pending)
 		update_userprofile.save()
-		return HttpResponse("updated friends_pending for user=%s" % update_userprofile.pk)
+		return HttpResponse("updated friends_pending for user=%s" % update_userprofile.pk, status=status.HTTP_200_OK)
 	
 	@action(detail=True, methods=['post'], serializer_class=FriendSerializer)
 	def friend_confirm(self, request, pk, *args, **kwargs):
@@ -95,7 +95,7 @@ class UserProfileViewSet(ModelViewSet):
 					update_userprofile.friends_confirmed.add(friend_confirmed)
 					update_userprofile.friends_pending.remove(friend_confirmed)
 		update_userprofile.save()
-		return HttpResponse("updated friends_confirmed for user=%s" % update_userprofile.pk)
+		return HttpResponse("updated friends_confirmed for user=%s" % update_userprofile.pk, status=status.HTTP_200_OK)
 
 	def resize_image(self, image):
 		try:

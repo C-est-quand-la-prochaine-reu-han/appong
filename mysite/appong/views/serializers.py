@@ -40,7 +40,8 @@ class TournamentSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Tournament
 		read_only_fields = ('tourn_creator', 'tourn_confirmed')
-		fields =	['tourn_name', 
+		fields =	['pk', 
+					'tourn_name', 
 					'tourn_creator', 
 					'tourn_pending', 
 					'tourn_confirmed']
