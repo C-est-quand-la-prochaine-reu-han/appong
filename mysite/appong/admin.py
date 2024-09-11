@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from . models import UserProfile, Match, Tournament
+from .models import UserProfile, Match, Tournament
 
 class UserAdmin(admin.ModelAdmin):
 	filter_horizontal = ('friends')

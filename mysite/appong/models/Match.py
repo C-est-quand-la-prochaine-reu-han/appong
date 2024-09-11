@@ -1,13 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
-from django.contrib.auth.models import User
-
-class UserProfile(models.Model):
-	user = models.ForeignKey(User, on_delete=models.CASCADE)
-	user_nick = models.CharField(max_length=30, unique=True)
-	avatar = models.ImageField(default="default_avatar.jpg")
-	friends_pending = models.ManyToManyField('self', blank=True, symmetrical=True)
-	friends_confirmed = models.ManyToManyField('self', blank=True, symmetrical=True)
+from .UserProfile import UserProfile
 
 class Match(models.Model):
 	tournament_id = models.ForeignKey(null=True, blank=True, to="Tournament", on_delete=models.CASCADE, related_name="tournament")
@@ -32,9 +25,5 @@ class Match(models.Model):
 		self.full_clean()
 		super().save(*args, **kwargs)
 
-class Tournament(models.Model):
-	tourn_start_time = models.DateTimeField(auto_now_add=True)
-	tourn_name = models.CharField(max_length=30, unique=True)
-	tourn_creator = models.ForeignKey(to=UserProfile, on_delete=models.CASCADE)
-	tourn_pending = models.ManyToManyField(blank=True, to="UserProfile", related_name="tourn_pend")
-	tourn_confirmed = models.ManyToManyField(blank=True, to="UserProfile", related_name="tourn_conf")
+	def __str__(self):
+		return self.pk

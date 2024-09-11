@@ -1,13 +1,12 @@
 from rest_framework import permissions, status
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.decorators import action, api_view, permission_classes
+from rest_framework.decorators import action
 
 from django.http import HttpResponse
-from ..models import UserProfile, Match, Tournament
+from ..models import UserProfile, Tournament
 from .serializers import TournamentSerializer, TournamentConfirmedSerializer
 from django.db import IntegrityError
-
-from django.http import HttpResponse
+from django.core.exceptions import ValidationError
 
 class TournamentViewSet(ModelViewSet):
 	serializer_class = TournamentSerializer
@@ -16,42 +15,34 @@ class TournamentViewSet(ModelViewSet):
 
 	def delete(self, request, pk, *args, **kwargs):
 		Tournament.objects.get(pk=pk).delete()
-		return HttpResponse("deleted tournament pk=%s" % pk, status=status.HTTP_204_NO_CONTENT)
-	
-	def create(self, request, *args, **kwargs):
-		new_tourn = Tournament()
-		if request.data.get('tourn_name') == '':
-			return HttpResponse("Tournament needs a name", status=status.HTTP_400_BAD_REQUEST)
+		context = "deleted tournament pk=%s" % pk
+		return HttpResponse(context, status=status.HTTP_204_NO_CONTENT)
 
-		new_tourn.tourn_name = request.data.get('tourn_name')
-		new_tourn.tourn_creator = UserProfile.objects.get(user=request.user)
+	def create(self, request, *args, **kwargs):
+		name = request.data.get('tourn_name')
+		creator = UserProfile.objects.get(user=request.user)
+		pending = request.data.get('tourn_pending')
+		if name == '':
+			context = "Tournament needs a name"
+			return HttpResponse(context, status=status.HTTP_400_BAD_REQUEST)
 
 		try:
-			new_tourn.save()
+			Tournament.objects.create_tournament(name, creator, pending)
 		except IntegrityError as e: #raised by model constraint tourn_name(unique=True)
 			return HttpResponse(e, status=status.HTTP_400_BAD_REQUEST)
-		
-		for value in request.data.get("tourn_pending"):
-			new_tourn.tourn_pending.add(UserProfile.objects.get(pk=value))
-		if len(new_tourn.tourn_pending.values_list()) < 3:
-			new_tourn.delete()
-			return HttpResponse("Tournament needs at least 3 players", status=status.HTTP_400_BAD_REQUEST)
-
-		try:
-			new_tourn.save()
-		except IntegrityError as e: #not sure what we're catching here
+		except ValidationError as e:
 			return HttpResponse(e, status=status.HTTP_400_BAD_REQUEST)
 
-		return HttpResponse("Tournament %s created" % new_tourn.pk, status=status.HTTP_201_CREATED)
+		context = "Tournament %s created" % name
+		return HttpResponse(context, status=status.HTTP_201_CREATED)
 
 	@action(detail=True, methods=['post'], serializer_class = TournamentConfirmedSerializer)
 	def tourn_confirm(self, request, pk, *args, **kwargs):
 		update_tourn = Tournament.objects.get(pk=pk)
 		update_tourn.tourn_confirmed.clear()
-		for value in request.POST.getlist("tourn_confirmed"):
-			friend_confirmed = UserProfile.objects.get(pk=value)
-			if update_tourn.tourn_pending.contains(friend_confirmed):
-				update_tourn.tourn_confirmed.add(friend_confirmed)
-				update_tourn.tourn_pending.remove(friend_confirmed)
-		update_tourn.save()
-		return HttpResponse("updated tourn_confirmed for tournament=%s" % update_tourn.pk, status=status.HTTP_200_OK)
+
+		if "tour_confirmed" in request.POST:
+			update_tourn.add_to_confirmed(request.POST.getlist("tourn_confirmed"))
+
+		context = "updated tourn_confirmed for tournament=%s" % update_tourn.pk
+		return HttpResponse(context, status=status.HTTP_200_OK)
