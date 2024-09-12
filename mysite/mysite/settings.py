@@ -56,7 +56,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOWED_ORIGINS = ["localhost"] # TODO Parse origin from env and make the website's url flexible.
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost'
+] # TODO Parse origin from env and make the website's url flexible.
 
 ROOT_URLCONF = 'mysite.urls'
 
@@ -120,18 +122,18 @@ USE_I18N = True
 
 USE_TZ = True
 
-MEDIA_URL = "/media/"
+MEDIA_URL = '/media/'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# MEDIA_ROOT = "media/"
+# MEDIA_ROOT = 'media/'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
 
-STATICFILES_DIRS = [BASE_DIR / "static", BASE_DIR / MEDIA_ROOT]
+STATICFILES_DIRS = [BASE_DIR / 'static', BASE_DIR / MEDIA_ROOT]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
