@@ -26,8 +26,8 @@ class MatchViewSet(ModelViewSet):
 		new_match.player1 = UserProfile.objects.get(pk=request.data.get("player1"))
 		new_match.player2 = UserProfile.objects.get(pk=request.data.get("player2"))
 		print(request.data)
-		if 'tournament.tourn_name' in request.data:
-			new_match.tournament = Tournament.objects.get(pk=request.data.get("tournament.tourn_name"))
+		if 'tournament.name' in request.data:
+			new_match.tournament = Tournament.objects.get(pk=request.data.get("tournament.name"))
 		try:
 			new_match.save()
 		except ValidationError as e: #error raised in model (see Match.clean: where player1==player2)

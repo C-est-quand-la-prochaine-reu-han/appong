@@ -61,7 +61,7 @@ class UserProfileViewSet(ModelViewSet):
 
 		try:
 			update_userprofile.save()
-		except IntegrityError as e: #raised by model constraint tourn_name(unique=True)
+		except IntegrityError as e: #raised by model constraint name(unique=True)
 			return HttpResponse(e, status=status.HTTP_400_BAD_REQUEST)
 
 		context = "updated user pk=%s" % update_userprofile.pk
@@ -82,7 +82,6 @@ class UserProfileViewSet(ModelViewSet):
 	def friend_confirm(self, request, pk, *args, **kwargs):
 		update_userprofile = UserProfile.objects.get(pk=pk)
 		update_userprofile.friends_confirmed.clear()
-
 		if "friends_confirmed" in request.POST:
 			update_userprofile.add_to_confirmed(request.POST.getlist("friends_confirmed"))
 

@@ -19,16 +19,16 @@ class TournamentViewSet(ModelViewSet):
 		return HttpResponse(context, status=status.HTTP_204_NO_CONTENT)
 
 	def create(self, request, *args, **kwargs):
-		name = request.data.get('tourn_name')
+		name = request.data.get('name')
 		creator = UserProfile.objects.get(user=request.user)
-		pending = request.data.get('tourn_pending')
+		pending = request.data.get('pending')
 		if name == '':
 			context = "Tournament needs a name"
 			return HttpResponse(context, status=status.HTTP_400_BAD_REQUEST)
 
 		try:
 			Tournament.objects.create_tournament(name, creator, pending)
-		except IntegrityError as e: #raised by model constraint tourn_name(unique=True)
+		except IntegrityError as e: #raised by model constraint name(unique=True)
 			return HttpResponse(e, status=status.HTTP_400_BAD_REQUEST)
 		except ValidationError as e:
 			return HttpResponse(e, status=status.HTTP_400_BAD_REQUEST)
@@ -37,12 +37,12 @@ class TournamentViewSet(ModelViewSet):
 		return HttpResponse(context, status=status.HTTP_201_CREATED)
 
 	@action(detail=True, methods=['post'], serializer_class = TournamentConfirmedSerializer)
-	def tourn_confirm(self, request, pk, *args, **kwargs):
+	def confirm(self, request, pk, *args, **kwargs):
 		update_tourn = Tournament.objects.get(pk=pk)
-		update_tourn.tourn_confirmed.clear()
+		update_tourn.confirmed.clear()
 
-		if "tour_confirmed" in request.POST:
-			update_tourn.add_to_confirmed(request.POST.getlist("tourn_confirmed"))
+		if 'confirmed' in request.POST:
+			update_tourn.add_to_confirmed(request.POST.getlist("confirmed"))
 
-		context = "updated tourn_confirmed for tournament=%s" % update_tourn.pk
+		context = "updated confirmed for tournament=%s" % update_tourn.pk
 		return HttpResponse(context, status=status.HTTP_200_OK)
