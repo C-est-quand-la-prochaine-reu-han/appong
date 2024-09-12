@@ -26,7 +26,9 @@ SECRET_KEY = 'django-insecure-3k!)tsq*k0aw@)--ff^1jnw^rwld*($qwqfkzk+r-$pv#5_!2j
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+]
 
 
 # Application definition
@@ -57,7 +59,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost'
+        'http://localhost:8000'
 ] # TODO Parse origin from env and make the website's url flexible.
 
 ROOT_URLCONF = 'mysite.urls'
@@ -145,6 +147,9 @@ AUTH_PROFILE_MODULE = 'appong.UserProfile'
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ]

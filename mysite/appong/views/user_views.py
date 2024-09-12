@@ -1,6 +1,7 @@
 from rest_framework import permissions, status
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action, api_view, permission_classes
+from rest_framework.authentication import TokenAuthentication
 
 from django.http import HttpResponse
 from django.contrib.auth.models import User
@@ -14,7 +15,8 @@ from django.core.exceptions import ValidationError
 class UserProfileViewSet(ModelViewSet):
 	serializer_class = UserProfileSerializer
 	queryset = UserProfile.objects.all()
-	permission_classes = [permissions.IsAuthenticated]#only logged in users can see data
+	authentication_classes = [TokenAuthentication]
+	permission_classes = [permissions.IsAuthenticated] # only logged in users can see data
 
 	#change name instead of deleting profile from database
 	def delete(self, request, pk, *args, **kwargs):
