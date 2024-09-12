@@ -3,11 +3,13 @@ from ...models import Match, Tournament
 from .Tournament import TournamentMatchSerializer
 
 class MatchSerializer(serializers.ModelSerializer):
-	tournament_id = TournamentMatchSerializer(required=False)
+	tournament = TournamentMatchSerializer(required=False)
 
 	class Meta:
 		model = Match
-		fields =	['tournament_id', 
+		read_only_fields = ['match_start_time', 'match_end_time']
+		fields =	['pk',
+					'tournament', 
 					'player1', 'player2', 
 					'match_start_time', 'match_end_time', 
 					'player1_hit_nb', 'player2_hit_nb', 

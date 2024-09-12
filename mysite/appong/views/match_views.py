@@ -2,7 +2,7 @@ from rest_framework import permissions, status
 from rest_framework.viewsets import ModelViewSet
 
 from django.http import HttpResponse
-from ..models import Match, UserProfile
+from ..models import Match, UserProfile, Tournament
 from .serializers import MatchSerializer
 from django.core.exceptions import ValidationError
 
@@ -25,7 +25,9 @@ class MatchViewSet(ModelViewSet):
 
 		new_match.player1 = UserProfile.objects.get(pk=request.data.get("player1"))
 		new_match.player2 = UserProfile.objects.get(pk=request.data.get("player2"))
-		# TODO add tournament id if in tournament (otherwise default = NULL)
+		print(request.data)
+		if 'tournament.tourn_name' in request.data:
+			new_match.tournament = Tournament.objects.get(pk=request.data.get("tournament.tourn_name"))
 		try:
 			new_match.save()
 		except ValidationError as e: #error raised in model (see Match.clean: where player1==player2)

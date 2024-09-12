@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from .UserProfile import UserProfile
 
 class Match(models.Model):
-	tournament_id = models.ForeignKey(null=True, blank=True, to="Tournament", on_delete=models.CASCADE, related_name="tournament")
+	tournament = models.ForeignKey(null=True, blank=True, to="Tournament", on_delete=models.CASCADE, related_name="tournament")
 	player1 = models.ForeignKey(to=UserProfile, on_delete=models.CASCADE, related_name="player1")
 	player2 = models.ForeignKey(to=UserProfile, on_delete=models.CASCADE, related_name="player2")
 	match_start_time = models.DateTimeField(auto_now_add=True)

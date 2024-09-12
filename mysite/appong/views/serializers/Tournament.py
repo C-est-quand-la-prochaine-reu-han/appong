@@ -15,10 +15,10 @@ class TournamentSerializer(serializers.ModelSerializer):
 					'tourn_confirmed']
 
 class TournamentMatchSerializer(serializers.ModelSerializer):
-	pk = serializers.PrimaryKeyRelatedField(required=True, queryset=Tournament.objects.all())
+	tourn_name = serializers.PrimaryKeyRelatedField(required=False, queryset=Tournament.objects.all())
 	class Meta:
 		model = Tournament
-		fields =	['pk']
+		fields =	['pk', 'tourn_name']
 
 class TournamentConfirmedSerializer(serializers.ModelSerializer):
 	class Meta:
