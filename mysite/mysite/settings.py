@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'appong.apps.AppongConfig',
     'corsheaders',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
