@@ -30,8 +30,6 @@ class Tournament(models.Model):
 		return self.name
 	
 	def add_to_confirmed(self, new_players):
-		print("----", new_players)
-		print("----", self.pending.all())
 		players = UserProfile.objects. \
 			filter(pk__in=new_players). \
 			filter(pk__in=self.pending.all())

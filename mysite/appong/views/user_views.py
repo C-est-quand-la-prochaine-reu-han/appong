@@ -39,7 +39,6 @@ class UserProfileViewSet(ModelViewSet):
 		# if "avatar" in request.FILES:
 		# 	new_userprofile.update_avatar(new_userprofile, request.FILES["avatar"])
 		try:
-			print(request.data.get("user.username"))
 			UserProfile.objects.create_userprofile(
 				request.data.get("user.username"),
 				request.data.get("user.password"),

@@ -25,7 +25,6 @@ class MatchViewSet(ModelViewSet):
 
 		new_match.player1 = UserProfile.objects.get(pk=request.data.get("player1"))
 		new_match.player2 = UserProfile.objects.get(pk=request.data.get("player2"))
-		print(request.data)
 		if 'tournament.name' in request.data:
 			new_match.tournament = Tournament.objects.get(pk=request.data.get("tournament.name"))
 		try:

@@ -9,7 +9,6 @@ app_name = "appong"
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
-# router.register(r"login", views.UserProfileViewSet)
 router.register(r"user", views.UserProfileViewSet)
 router.register(r"match", views.MatchViewSet)
 router.register(r"tournament", views.TournamentViewSet)
