@@ -7,42 +7,32 @@ from ..models import UserProfile, Tournament
 from .serializers import TournamentSerializer, TournamentConfirmedSerializer
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
+from rest_framework.response import Response
 
 class TournamentViewSet(ModelViewSet):
 	serializer_class = TournamentSerializer
 	queryset = Tournament.objects.all()
 	permission_classes = [permissions.IsAuthenticated]#only logged in users can see data
 
-	def delete(self, request, pk, *args, **kwargs):
-		Tournament.objects.get(pk=pk).delete()
-		context = "deleted tournament pk=%s" % pk
-		return HttpResponse(context, status=status.HTTP_204_NO_CONTENT)
-
 	def create(self, request, *args, **kwargs):
-		name = request.data.get('name')
-		creator = UserProfile.objects.get(user=request.user)
-		pending = request.data.get('pending')
-		if name == '':
-			context = "Tournament needs a name"
-			return HttpResponse(context, status=status.HTTP_400_BAD_REQUEST)
+		serializer = self.get_serializer(data=request.data)
+		serializer.is_valid(raise_exception=True)
 
 		try:
-			Tournament.objects.create_tournament(name, creator, pending)
-		except IntegrityError as e: #raised by model constraint name(unique=True)
-			return HttpResponse(e, status=status.HTTP_400_BAD_REQUEST)
-		except ValidationError as e:
-			return HttpResponse(e, status=status.HTTP_400_BAD_REQUEST)
+			serializer.save(creator=UserProfile.objects.get(user=request.user.pk))
+		except UserProfile.DoesNotExist as e:
+			return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
 
-		context = "Tournament %s created" % name
-		return HttpResponse(context, status=status.HTTP_201_CREATED)
+		headers = self.get_success_headers(serializer.data)
+		return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 	@action(detail=True, methods=['post'], serializer_class = TournamentConfirmedSerializer)
 	def confirm(self, request, pk, *args, **kwargs):
 		update_tourn = Tournament.objects.get(pk=pk)
 		update_tourn.confirmed.clear()
 
-		if 'confirmed' in request.POST:
-			update_tourn.add_to_confirmed(request.POST.getlist("confirmed"))
+		if 'confirmed' in request.data:
+			update_tourn.add_to_confirmed(request.data.get("confirmed"))
 
 		context = "updated confirmed for tournament=%s" % update_tourn.pk
-		return HttpResponse(context, status=status.HTTP_200_OK)
+		return Response(context, status=status.HTTP_200_OK)
