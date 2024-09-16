@@ -1,8 +1,8 @@
 from django.urls import path, include
+from django.views.generic import TemplateView
 from . import views
 
 from rest_framework.authtoken import views as drfviews
-
 from rest_framework import routers
 
 app_name = "appong"

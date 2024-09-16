@@ -3,7 +3,6 @@ from ...models import Tournament, UserProfile
 from .UserProfile import UserProfileSerializer
 from django.core.exceptions import ValidationError
 
-
 class TournamentSerializer(serializers.ModelSerializer):
 	creator = UserProfileSerializer(read_only=True)
 

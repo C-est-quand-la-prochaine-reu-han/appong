@@ -19,6 +19,9 @@ class UserProfileSerializer(serializers.ModelSerializer):
 		fields =	['pk', 'user', 'user_nick', 'avatar',
 					'friends_pending', 'friends_confirmed']
 
+	def create(self, validated_data):
+		return UserProfile.objects.create_userprofile(**validated_data)
+
 class FriendSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = UserProfile
