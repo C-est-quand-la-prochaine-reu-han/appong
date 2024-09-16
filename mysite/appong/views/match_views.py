@@ -4,33 +4,28 @@ from rest_framework.viewsets import ModelViewSet
 from django.http import HttpResponse
 from ..models import Match, UserProfile, Tournament
 from .serializers import MatchSerializer
+from django.db import IntegrityError
+
 from django.core.exceptions import ValidationError
+from rest_framework.response import Response
 
 class MatchViewSet(ModelViewSet):
 	serializer_class = MatchSerializer
 	queryset = Match.objects.all()
 	permission_classes = [permissions.IsAuthenticated]#only logged in users can see data
 
-	def delete(self, request, pk, *args, **kwargs):
-		Match.objects.get(pk=pk).delete()
-		context = "deleted match pk=%s" % pk
-		return HttpResponse(context, status=status.HTTP_204_NO_CONTENT)
-
 	def create(self, request, *args, **kwargs):
-		new_match = Match()
-		if "player1" not in request.data \
-			or "player2" not in request.data:
-				context = "You must provide two players for a match"
-				return HttpResponse(context, status=status.HTTP_400_BAD_REQUEST)
+		serializer = self.get_serializer(data=request.data)
 
-		new_match.player1 = UserProfile.objects.get(pk=request.data.get("player1"))
-		new_match.player2 = UserProfile.objects.get(pk=request.data.get("player2"))
-		if 'tournament.name' in request.data:
-			new_match.tournament = Tournament.objects.get(pk=request.data.get("tournament.name"))
 		try:
-			new_match.save()
-		except ValidationError as e: #error raised in model (see Match.clean: where player1==player2)
-			return HttpResponse(e.messages, status=status.HTTP_400_BAD_REQUEST)
+			serializer.is_valid(raise_exception=True)
+		except ValidationError as e:
+			return Response(e.messages, status=status.HTTP_400_BAD_REQUEST)
 
-		context = "created match %s" % new_match.pk
-		return HttpResponse(context, status=status.HTTP_201_CREATED)
+		try:
+			serializer.save()
+		except IntegrityError as e:
+			return Response(e.message, status=status.HTTP_400_BAD_REQUEST)
+
+		headers = self.get_success_headers(serializer.data)
+		return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

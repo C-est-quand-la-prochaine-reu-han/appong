@@ -1,9 +1,15 @@
 from rest_framework import serializers
 from ...models import Match, Tournament
 from .Tournament import TournamentMatchSerializer
+from django.core.exceptions import ValidationError
 
 class MatchSerializer(serializers.ModelSerializer):
 	tournament = TournamentMatchSerializer(required=False)
+
+	def validate(self, data):
+		if data.get("player1") == data.get("player2"):
+			raise ValidationError("Player can't play against themselves")
+		return data
 
 	class Meta:
 		model = Match
