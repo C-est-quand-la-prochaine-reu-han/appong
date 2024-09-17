@@ -16,7 +16,11 @@ class TournamentViewSet(ModelViewSet):
 
 	def create(self, request, *args, **kwargs):
 		serializer = self.get_serializer(data=request.data)
-		serializer.is_valid(raise_exception=True)
+
+		try:
+			serializer.is_valid(raise_exception=True)
+		except ValidationError as e:
+			return Response(e.messages, status=status.HTTP_400_BAD_REQUEST)
 
 		try:
 			serializer.save(creator=UserProfile.objects.get(user=request.user.pk))

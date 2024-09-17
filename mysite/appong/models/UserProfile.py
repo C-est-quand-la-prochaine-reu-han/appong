@@ -14,8 +14,8 @@ class UserProfileManager(models.Manager):
 		new_userprofile = UserProfile()
 		new_userprofile.user = new_user
 		new_userprofile.user_nick = user_nick
-		if avatar is not None:
-			new_userprofile.update_avatar(new_userprofile, avatar)
+		# if avatar is not None:
+		# 	new_userprofile.update_avatar(new_userprofile, avatar)
 
 		new_user.save()
 		new_userprofile.save()
