@@ -38,10 +38,10 @@ class UserDashboard(viewsets.ViewSet):
 # total gaming Time
 
 #number of matches played
-#SELECT COUNT(*) FROM appong_match WHERE player1_id=1 OR player2_id=1
+#SELECT CAST(COUNT(*) AS Float) FROM appong_match WHERE player1_id=1 OR player2_id=1
 
 #number of wins
-#SELECT COUNT(*) FROM appong_match WHERE (player1_id=1 AND player1_score > player2_score) OR (player2_id=1 AND player2_score > player1_score)
+#SELECT CAST(COUNT(*) AS Float) FROM appong_match WHERE (player1_id=1 AND player1_score > player2_score) OR (player2_id=1 AND player2_score > player1_score)
 
 #number of perfect hits
 #SELECT COALESCE(SUM(player1_perfect_hit_nb), 0) FROM appong_match WHERE player1_id=1
@@ -69,4 +69,4 @@ class UserDashboard(viewsets.ViewSet):
 
 #SELECT(SELECT TOTAL (player1_score) FROM appong_match WHERE player1_id=1) + (SELECT TOTAL (playe
 # GROUPBY
-# COUNT IN FLOATS
+# COUNT IN FLOATS : SELECT CAST(COUNT(*) AS Float) ...
