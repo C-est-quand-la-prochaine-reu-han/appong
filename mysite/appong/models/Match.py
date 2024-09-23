@@ -2,6 +2,9 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from .UserProfile import UserProfile
 
+#TODO need to change match time defaults as game as saved only at end
+#Use match status to declare the end of a tournament
+
 class Match(models.Model):
 	tournament = models.ForeignKey(null=True, blank=True, to="Tournament", on_delete=models.CASCADE, related_name="tournament")
 	player1 = models.ForeignKey(to=UserProfile, on_delete=models.CASCADE, related_name="player1")
