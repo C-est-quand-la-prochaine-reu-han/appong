@@ -43,3 +43,13 @@ class AvatarSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = UserProfile
 		fields =	['avatar']
+
+class RegisterUserSerializer(serializers.ModelSerializer):
+	user = UserSerializer(required=True)
+	class Meta:
+		model = UserProfile
+		fields = ['user', 'user_nick']
+		extra_kwargs = {'user.username': {'write_only': True}, 'user_nick': {'write_only': True}}
+
+	def create(self, validated_data):
+		return UserProfile.objects.create_userprofile(**validated_data)

@@ -3,11 +3,8 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from django.http import HttpResponse
 from ..models import UserProfile, Tournament
 from .serializers import TournamentSerializer, TournamentConfirmedSerializer
-from django.db import IntegrityError
-from django.core.exceptions import ValidationError
 
 class TournamentViewSet(ModelViewSet):
 	serializer_class = TournamentSerializer

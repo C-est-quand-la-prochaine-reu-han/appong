@@ -6,6 +6,7 @@ from PIL import Image
 from io import BytesIO
 from django.core.files.base import ContentFile	
 
+
 class UserProfileManager(models.Manager):
 	def create_userprofile(self, user, user_nick, avatar=None):
 		new_user = User.objects.create(username=user.get('username'))
@@ -20,6 +21,7 @@ class UserProfileManager(models.Manager):
 		new_user.save()
 		new_userprofile.save()
 		return new_userprofile
+
 
 class UserProfile(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)

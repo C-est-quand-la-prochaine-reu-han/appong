@@ -1,16 +1,18 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+
 from .UserProfile import UserProfile
 
 #TODO need to change match time defaults as game as saved only at end
-#Use match status to declare the end of a tournament
+#Use match status to declare the end of a tournament?
+
 
 class Match(models.Model):
 	tournament = models.ForeignKey(null=True, blank=True, to="Tournament", on_delete=models.CASCADE, related_name="tournament")
 	player1 = models.ForeignKey(to=UserProfile, on_delete=models.CASCADE, related_name="player1")
 	player2 = models.ForeignKey(to=UserProfile, on_delete=models.CASCADE, related_name="player2")
-	match_start_time = models.DateTimeField(auto_now_add=True)
-	match_end_time = models.DateTimeField(auto_now=True)
+	match_start_time = models.DateTimeField()
+	match_end_time = models.DateTimeField()
 	player1_hit_nb = models.PositiveIntegerField(default=0)
 	player2_hit_nb = models.PositiveIntegerField(default=0)
 	player1_perfect_hit_nb = models.PositiveIntegerField(default=0)

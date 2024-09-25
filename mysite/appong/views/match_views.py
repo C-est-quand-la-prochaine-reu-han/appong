@@ -1,13 +1,13 @@
 from rest_framework import permissions, status
 from rest_framework.viewsets import ModelViewSet
-
-from django.http import HttpResponse
-from ..models import Match, UserProfile, Tournament
-from .serializers import MatchSerializer
-from django.db import IntegrityError
-
-from django.core.exceptions import ValidationError
 from rest_framework.response import Response
+
+from django.db import IntegrityError
+from django.core.exceptions import ValidationError
+
+from ..models import Match
+from .serializers import MatchSerializer
+
 
 class MatchViewSet(ModelViewSet):
 	serializer_class = MatchSerializer
