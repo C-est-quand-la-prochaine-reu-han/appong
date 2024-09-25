@@ -28,6 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'localhost',
+	# '10.12.12.4',
 ]
 
 
@@ -58,9 +59,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOWED_ORIGINS = [
-        'http://localhost:8000'
-] # TODO Parse origin from env and make the website's url flexible.
+CORS_ALLOWED_ORIGINS = [] # TODO Parse origin from env and make the website's url flexible.
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'mysite.urls'
 
