@@ -1,5 +1,5 @@
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.authentication import TokenAuthentication
@@ -11,7 +11,6 @@ from django.core.exceptions import ValidationError
 
 from ..models import UserProfile
 from .serializers import UserProfileSerializer, FriendSerializer, AvatarSerializer, RegisterUserSerializer
-from .permissions import IsAdminOwnerOrReadOnly
 
 # TODO cleanup unused headers and comments | debug mode off | .env file for server variables(settings.py.database)
 
@@ -43,9 +42,10 @@ class UserProfileViewSet(ModelViewSet):
 	serializer_class = UserProfileSerializer
 	queryset = UserProfile.objects.all()
 	authentication_classes = [TokenAuthentication]
-	permission_classes = [IsAuthenticated & IsAdminOwnerOrReadOnly]
+	permission_classes = [IsAuthenticated]
 
 	#change name instead of deleting profile from database
+	#TODO this delete is not called for some reason, users can delete each other
 	def delete(self, request, *args, **kwargs):
 		delete_userprofile = UserProfile.objects.filter(pk=request.user.pk)
 		if delete_userprofile.count() == 1:
@@ -53,24 +53,9 @@ class UserProfileViewSet(ModelViewSet):
 
 		return Response(status=status.HTTP_204_NO_CONTENT)
 
-	# def create(self, request, *args, **kwargs): # reinvented the wheel here
-	# 	serializer = self.get_serializer(data=request.data)
-	# 	permission_classes = [AllowAny]
-	# 	try:
-	# 		serializer.is_valid(raise_exception=True)
-	# 	except ValidationError as e: #raised by user model validation
-	# 		return Response(e.messages, status=status.HTTP_400_BAD_REQUEST)
-
-	# 	try:
-	# 		serializer.save()
-	# 	except IntegrityError as e: #raised by model constraint (unique=True)
-	# 		return Response(e, status=status.HTTP_400_BAD_REQUEST)
-		
-	# 	headers = self.get_success_headers(serializer.data)
-	# 	return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
-	def update(self, request, *args, **kwargs):
-		instance = self.get_object()
+	@action(detail=False, methods=['put'])
+	def update_user(self, request, *args, **kwargs):
+		instance = UserProfile.objects.get(pk=request.user.pk)
 		serializer = self.get_serializer(instance, data=request.data, partial=True)
 
 		try:
@@ -86,8 +71,8 @@ class UserProfileViewSet(ModelViewSet):
 		headers = self.get_success_headers(serializer.data)
 		return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-	@action(detail=True, methods=['put'], serializer_class=AvatarSerializer, parser_classes = [FileUploadParser])
-	def update_avatar(self, request, pk, *args, **kwargs):
+	@action(detail=False, methods=['put'], serializer_class=AvatarSerializer, parser_classes = [FileUploadParser])
+	def update_avatar(self, request, *args, **kwargs):
 		update_userprofile = UserProfile.objects.get(user=request.user.pk)
 
 		if 'file' in request.data:
@@ -120,11 +105,13 @@ class UserProfileViewSet(ModelViewSet):
 
 	@action(detail=True, methods=['get'])
 	def dashboard(self, request, pk, *args, **kwargs):
-		with connection.cursor() as cursor:
-			cursor.execute("SELECT * FROM dashboard(%s)", [pk])
-			headings = []
-			for value in cursor.description:
-				headings.append(value.name)
-			results_table = dict(zip(headings, cursor.fetchone()))
-
+		try:
+			with connection.cursor() as cursor:
+				cursor.execute("SELECT * FROM dashboard(%s)", [pk])
+				headings = []
+				for value in cursor.description:
+					headings.append(value.name)
+				results_table = dict(zip(headings, cursor.fetchone()))
+		except:
+			return Response(status=status.HTTP_404_NOT_FOUND)
 		return Response(results_table, status=status.HTTP_200_OK)
