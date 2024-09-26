@@ -21,7 +21,7 @@ class TournamentManager(models.Manager):
 class Tournament(models.Model):
 	start_time = models.DateTimeField(auto_now_add=True)
 	name = models.CharField(max_length=30, unique=True)
-	creator = models.ForeignKey(to=UserProfile, on_delete=models.CASCADE)
+	creator = models.ForeignKey(to=UserProfile, on_delete=models.SET_NULL, null=True)
 	pending = models.ManyToManyField(blank=True, to="UserProfile", related_name="pend")
 	confirmed = models.ManyToManyField(blank=True, to="UserProfile", related_name="conf")
 

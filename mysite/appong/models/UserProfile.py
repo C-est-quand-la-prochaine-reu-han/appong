@@ -24,7 +24,7 @@ class UserProfileManager(models.Manager):
 
 
 class UserProfile(models.Model):
-	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 	user_nick = models.CharField(max_length=30, unique=True)
 	avatar = models.ImageField(default="default_avatar.jpg")
 	friends_pending = models.ManyToManyField('self', blank=True, symmetrical=True)
@@ -69,7 +69,7 @@ class UserProfile(models.Model):
 		self.friends_pending.remove(*friend_confirmed)
 
 	def anonymise(self):
-		user_object = User.objects.get(pk=self.pk)
+		user_object = User.objects.get(pk=self.user.pk)
 		user_object.username = "deleted" + str(self.pk)
 		user_object.is_active = False
 

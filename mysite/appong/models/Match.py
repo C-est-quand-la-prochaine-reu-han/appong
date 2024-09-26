@@ -8,9 +8,9 @@ from .UserProfile import UserProfile
 
 
 class Match(models.Model):
-	tournament = models.ForeignKey(null=True, blank=True, to="Tournament", on_delete=models.CASCADE, related_name="tournament")
-	player1 = models.ForeignKey(to=UserProfile, on_delete=models.CASCADE, related_name="player1")
-	player2 = models.ForeignKey(to=UserProfile, on_delete=models.CASCADE, related_name="player2")
+	tournament = models.ForeignKey(null=True, blank=True, to="Tournament", on_delete=models.SET_NULL, related_name="tournament")
+	player1 = models.ForeignKey(to=UserProfile, on_delete=models.SET_NULL, null=True, related_name="player1")
+	player2 = models.ForeignKey(to=UserProfile, on_delete=models.SET_NULL, null=True, related_name="player2")
 	match_start_time = models.DateTimeField()
 	match_end_time = models.DateTimeField()
 	player1_hit_nb = models.PositiveIntegerField(default=0)
