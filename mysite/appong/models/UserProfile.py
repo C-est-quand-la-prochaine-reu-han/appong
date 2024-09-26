@@ -69,12 +69,16 @@ class UserProfile(models.Model):
 		self.friends_pending.remove(*friend_confirmed)
 
 	def anonymise(self):
-		self.user.username = "deleted" + self.pk
-		self.user_nick = "deaded" + self.pk
-		self.user.is_active = False
+		user_object = User.objects.get(pk=self.pk)
+		user_object.username = "deleted" + str(self.pk)
+		user_object.is_active = False
+
+		self.user_nick = "deaded" + str(self.pk)
 		self.avatar = "default_avatar.jpg"
 		self.friends_pending.clear()
 		self.friends_confirmed.clear()
+
+		user_object.save()
 		self.save()
 
 	def __str__(self):

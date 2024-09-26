@@ -44,9 +44,7 @@ class UserProfileViewSet(ModelViewSet):
 	authentication_classes = [TokenAuthentication]
 	permission_classes = [IsAuthenticated]
 
-	#change name instead of deleting profile from database
-	#TODO this delete is not called for some reason, users can delete each other
-	def delete(self, request, *args, **kwargs):
+	def destroy(self, request, pk, *args, **kwargs):
 		delete_userprofile = UserProfile.objects.filter(pk=request.user.pk)
 		if delete_userprofile.count() == 1:
 			delete_userprofile[0].anonymise()
