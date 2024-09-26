@@ -44,7 +44,7 @@ class UserProfileViewSet(ModelViewSet):
 	authentication_classes = [TokenAuthentication]
 	permission_classes = [IsAuthenticated]
 
-	def destroy(self, request, pk, *args, **kwargs):
+	def destroy(self, request, pk=None, *args, **kwargs):
 		delete_userprofile = UserProfile.objects.filter(pk=request.user.pk)
 		if delete_userprofile.count() == 1:
 			delete_userprofile[0].anonymise()
