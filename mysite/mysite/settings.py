@@ -24,11 +24,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-3k!)tsq*k0aw@)--ff^1jnw^rwld*($qwqfkzk+r-$pv#5_!2j'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
-    'localhost',
-	# '10.12.12.4',
+    str(os.environ.get("hostname")),
 ]
 
 
@@ -59,9 +58,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOWED_ORIGINS = [] # TODO Parse origin from env and make the website's url flexible.
-
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    str(os.environ.get("hostname")),
+]
 
 ROOT_URLCONF = 'mysite.urls'
 
