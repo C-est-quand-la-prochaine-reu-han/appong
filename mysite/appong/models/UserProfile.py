@@ -6,19 +6,22 @@ from PIL import Image
 from io import BytesIO
 from django.core.files.base import ContentFile	
 
+
 class UserProfileManager(models.Manager):
-	def create_userprofile(self, username, password, user_nick, avatar=None):
-		new_user = User.objects.create(username=username)
-		new_user.set_password(password)
+	def create_userprofile(self, user, user_nick, avatar=None):
+		new_user = User.objects.create(username=user.get('username'))
+		new_user.set_password(user.get('password'))
 
 		new_userprofile = UserProfile()
 		new_userprofile.user = new_user
 		new_userprofile.user_nick = user_nick
-		if avatar is not None:
-			new_userprofile.update_avatar(new_userprofile, avatar)
+		# if avatar is not None:
+		# 	new_userprofile.update_avatar(new_userprofile, avatar)
 
 		new_user.save()
 		new_userprofile.save()
+		return new_userprofile
+
 
 class UserProfile(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)

@@ -3,7 +3,6 @@ from ...models import Tournament, UserProfile
 from .UserProfile import UserProfileSerializer
 from django.core.exceptions import ValidationError
 
-
 class TournamentSerializer(serializers.ModelSerializer):
 	creator = UserProfileSerializer(read_only=True)
 
@@ -20,15 +19,6 @@ class TournamentSerializer(serializers.ModelSerializer):
 					'creator', 
 					'pending', 
 					'confirmed']
-
-
-class TournamentMatchSerializer(serializers.ModelSerializer):
-	name = serializers.PrimaryKeyRelatedField(required=False, queryset=Tournament.objects.all())
-
-	class Meta:
-		model = Tournament
-		fields =	['pk', 'name']
-
 
 class TournamentConfirmedSerializer(serializers.ModelSerializer):
 

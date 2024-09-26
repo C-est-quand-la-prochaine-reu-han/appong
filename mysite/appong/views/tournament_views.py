@@ -1,13 +1,10 @@
 from rest_framework import permissions, status
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
+from rest_framework.response import Response
 
-from django.http import HttpResponse
 from ..models import UserProfile, Tournament
 from .serializers import TournamentSerializer, TournamentConfirmedSerializer
-from django.db import IntegrityError
-from django.core.exceptions import ValidationError
-from rest_framework.response import Response
 
 class TournamentViewSet(ModelViewSet):
 	serializer_class = TournamentSerializer
@@ -16,7 +13,11 @@ class TournamentViewSet(ModelViewSet):
 
 	def create(self, request, *args, **kwargs):
 		serializer = self.get_serializer(data=request.data)
-		serializer.is_valid(raise_exception=True)
+
+		try:
+			serializer.is_valid(raise_exception=True)
+		except ValidationError as e:
+			return Response(e.messages, status=status.HTTP_400_BAD_REQUEST)
 
 		try:
 			serializer.save(creator=UserProfile.objects.get(user=request.user.pk))
