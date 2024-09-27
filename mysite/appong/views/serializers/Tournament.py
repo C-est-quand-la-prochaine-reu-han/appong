@@ -15,10 +15,12 @@ class TournamentSerializer(serializers.ModelSerializer):
 		model = Tournament
 		read_only_fields = ['confirmed']
 		fields =	['pk', 
+					'start_time',
 					'name', 
 					'creator', 
 					'pending', 
 					'confirmed']
+
 
 class TournamentConfirmedSerializer(serializers.ModelSerializer):
 

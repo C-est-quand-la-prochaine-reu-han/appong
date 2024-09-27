@@ -3,8 +3,7 @@ from django.core.exceptions import ValidationError
 
 from .UserProfile import UserProfile
 
-#TODO need to change match time defaults as game as saved only at end
-#Use match status to declare the end of a tournament?
+#TODO Use match status to declare the end of a tournament?
 
 
 class Match(models.Model):

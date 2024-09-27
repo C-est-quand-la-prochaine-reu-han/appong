@@ -4,8 +4,9 @@ from .UserProfile import UserProfile
 
 
 class TournamentManager(models.Manager):
-	def create_tournament(self, name, creator, pending):
+	def create_tournament(self, start_time, name, creator, pending):
 		new_tournament = Tournament()
+		new_tournament.start_time = start_time
 		new_tournament.name = name
 		new_tournament.creator = creator
 
@@ -19,7 +20,7 @@ class TournamentManager(models.Manager):
 
 
 class Tournament(models.Model):
-	start_time = models.DateTimeField(auto_now_add=True)
+	start_time = models.DateTimeField()
 	name = models.CharField(max_length=30, unique=True)
 	creator = models.ForeignKey(to=UserProfile, on_delete=models.SET_NULL, null=True)
 	pending = models.ManyToManyField(blank=True, to="UserProfile", related_name="pend")

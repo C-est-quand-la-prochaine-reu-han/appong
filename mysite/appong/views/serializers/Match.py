@@ -10,7 +10,6 @@ class MatchSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Match
-		read_only_fields = ['match_start_time', 'match_end_time']
 		fields =	['pk',
 					'tournament', 
 					'player1', 'player2', 
