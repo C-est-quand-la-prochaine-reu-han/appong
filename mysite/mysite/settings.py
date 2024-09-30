@@ -24,11 +24,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-3k!)tsq*k0aw@)--ff^1jnw^rwld*($qwqfkzk+r-$pv#5_!2j'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG")
 
 ALLOWED_HOSTS = [
-    'localhost',
-	# '10.12.12.4',
+    "127.0.0.1:" + os.environ.get("PORT"), # Used by docker for the healthcheck
+    "127.0.0.1",
+    os.environ.get("HOSTNAME"),
 ]
 
 
@@ -59,9 +60,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOWED_ORIGINS = [] # TODO Parse origin from env and make the website's url flexible.
-
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://" + os.environ.get("HOSTNAME"),
+]
 
 ROOT_URLCONF = 'mysite.urls'
 
@@ -94,13 +95,14 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 #     }
 # }
 
+# TODO USE ENV VARS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'postgres', 
         'USER': 'postgres',
-        'PASSWORD': '1234',
-        'HOST': '127.0.0.1', 
+        'PASSWORD': os.environ.get("POSTGRES_PASSWORD"),
+        'HOST': 'ft_transcendence-postgresql-1', 
         'PORT': '5432',
     }
 }
