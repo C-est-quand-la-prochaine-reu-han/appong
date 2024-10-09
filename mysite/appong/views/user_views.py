@@ -51,6 +51,16 @@ class UserProfileViewSet(ModelViewSet):
 
 		return Response(status=status.HTTP_204_NO_CONTENT)
 
+	@action(detail=False, methods=['get'])
+	def me(self, request, *args, **kwargs):
+		try:
+			instance = UserProfile.objects.get(pk=request.user.pk)
+			serializer = self.get_serializer(instance)
+			headers = self.get_success_headers(serializer.data)
+			return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
+		except:
+			return Response(status=status.HTTP_404_NOT_FOUND)
+
 	@action(detail=False, methods=['put'])
 	def update_user(self, request, *args, **kwargs):
 		instance = UserProfile.objects.get(pk=request.user.pk)
