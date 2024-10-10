@@ -19,6 +19,7 @@ class RegisterUserViewSet(ModelViewSet):
 	serializer_class = RegisterUserSerializer
 	queryset = UserProfile.objects.all()
 	permission_classes = [AllowAny]
+	authentication_classes = []
 	http_method_names = ['post']
 
 	def create(self, request, *args, **kwargs): # reinvented the wheel here
