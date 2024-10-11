@@ -64,7 +64,7 @@ class UserProfileViewSet(ModelViewSet):
 
 	@action(detail=False, methods=['put'])
 	def update_user(self, request, *args, **kwargs):
-		instance = UserProfile.objects.get(pk=request.user.pk)
+		instance = UserProfile.objects.get(user__pk=request.user.pk)
 		serializer = self.get_serializer(instance, data=request.data, partial=True)
 
 		try:
