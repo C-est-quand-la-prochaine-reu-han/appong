@@ -13,9 +13,9 @@ class TournamentSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Tournament
-		read_only_fields = ['confirmed']
+		read_only_fields = ['start_time',
+					  'confirmed']
 		fields =	['pk', 
-					'start_time',
 					'name', 
 					'creator', 
 					'pending', 

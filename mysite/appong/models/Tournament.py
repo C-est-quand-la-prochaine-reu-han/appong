@@ -1,4 +1,5 @@
 from django.db import models, IntegrityError
+from datetime import datetime
 
 from .UserProfile import UserProfile
 
@@ -20,7 +21,7 @@ class TournamentManager(models.Manager):
 
 
 class Tournament(models.Model):
-	start_time = models.DateTimeField()
+	start_time = models.DateTimeField(auto_now_add=datetime.now)
 	name = models.CharField(max_length=30, unique=True)
 	creator = models.ForeignKey(to=UserProfile, on_delete=models.SET_NULL, null=True)
 	pending = models.ManyToManyField(blank=True, to="UserProfile", related_name="pend")
