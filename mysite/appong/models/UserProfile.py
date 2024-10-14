@@ -29,6 +29,7 @@ class UserProfile(models.Model):
 	avatar = models.ImageField(default="default_avatar.jpg")
 	friends_pending = models.ManyToManyField('self', blank=True, symmetrical=True)
 	friends_confirmed = models.ManyToManyField('self', blank=True, symmetrical=True)
+	last_access = models.DateTimeField(blank=True, null=True)
 
 	objects = UserProfileManager()
 

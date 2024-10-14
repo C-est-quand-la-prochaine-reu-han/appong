@@ -15,7 +15,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 	user = UserSerializer(required=True)
 	class Meta:
 		model = UserProfile
-		read_only_fields = ['pk', 'friends_pending', 'friends_confirmed', 'avatar']
+		read_only_fields = ['pk', 'friends_pending', 'friends_confirmed', 'avatar', 'last_access']
 		fields =	['pk', 'user', 'user_nick', 'avatar',
 					'friends_pending', 'friends_confirmed']
 
