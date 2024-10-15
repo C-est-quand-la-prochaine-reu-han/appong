@@ -1,6 +1,6 @@
+from .models import UserProfile
 from datetime import datetime
 from django.utils import timezone
-from .models import UserProfile
 from django.utils.timezone import make_aware
 
 class UpdateLastAccessMiddleware:
@@ -17,7 +17,8 @@ class UpdateLastAccessMiddleware:
             aware_datetime = make_aware(datetime.now())
             u.last_access = datetime.now(tz=aware_datetime.tzinfo)
             u.save()
-        except Exception as e:
+            print ("last_access: ", u.last_access)
+        except:
             pass
 
         return response

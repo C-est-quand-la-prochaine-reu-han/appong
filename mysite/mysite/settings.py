@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-3k!)tsq*k0aw@)--ff^1jnw^rwld*($qwqfkzk+r-$pv#5_!2j
 DEBUG = os.environ.get("DEBUG")
 
 ALLOWED_HOSTS = [
-    "127.0.0.1:" + os.environ.get("PORT"), # Used by docker for the healthcheck
+    "127.0.0.1:" + str(os.environ.get("PORT")), # Used by docker for the healthcheck
     "127.0.0.1",
     os.environ.get("HOSTNAME"),
 ]
@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'appong.apps.AppongConfig',
+    # 'appong.apps.AppongConfig',
+    'appong',
     'corsheaders',
     'rest_framework.authtoken',
 ]
@@ -62,7 +63,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://" + os.environ.get("HOSTNAME"),
+    "http://" + str(os.environ.get("HOSTNAME")),
 ]
 
 ROOT_URLCONF = 'mysite.urls'
