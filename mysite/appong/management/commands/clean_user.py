@@ -10,8 +10,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         aware_datetime = make_aware(datetime.now())
-        # date_cutoff = datetime.now(tz=aware_datetime.tzinfo) - timedelta(days=365)
-        date_cutoff = datetime.now(tz=aware_datetime.tzinfo) - timedelta(seconds=30)
+        date_cutoff = datetime.now(tz=aware_datetime.tzinfo) - timedelta(days=365)
+        # date_cutoff = datetime.now(tz=aware_datetime.tzinfo) - timedelta(seconds=30)
 
         users_past_cutoff = UserProfile.objects.filter(last_access__lt=date_cutoff)
         for user in users_past_cutoff:
