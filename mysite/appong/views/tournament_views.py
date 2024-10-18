@@ -6,6 +6,8 @@ from rest_framework.response import Response
 from ..models import UserProfile, Tournament
 from .serializers import TournamentSerializer, TournamentConfirmedSerializer
 
+from django.core.exceptions import ValidationError
+
 class TournamentViewSet(ModelViewSet):
 	serializer_class = TournamentSerializer
 	queryset = Tournament.objects.all()
