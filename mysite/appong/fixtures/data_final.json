@@ -27,5 +27,14 @@
             "friends_pending": [],
             "friends_confirmed": []
         }
+    },
+    {
+        "model": "authtoken.token",
+        "pk": 1,
+        "fields": {
+            "key": "ThisIsASuperStrongAndSolidToken:3",
+            "created": "",
+            "user_id": "1"
+        }
     }
 ]
