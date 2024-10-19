@@ -29,6 +29,7 @@ DEBUG = os.environ.get("DEBUG")
 ALLOWED_HOSTS = [
     "127.0.0.1:" + str(os.environ.get("PORT")), # Used by docker for the healthcheck
     "127.0.0.1",
+    "ft-transcendence-api-1.transcendence",
     os.environ.get("HOSTNAME"),
 ]
 
@@ -64,6 +65,8 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://" + str(os.environ.get("HOSTNAME")),
+    "https://" + str(os.environ.get("HOSTNAME")),
+    "http://ft-transcendence-api-1.transcendence:" + str(os.environ.get("PORT")),
 ]
 
 ROOT_URLCONF = 'mysite.urls'
@@ -103,7 +106,7 @@ DATABASES = {
         'NAME': 'postgres', 
         'USER': 'postgres',
         'PASSWORD': os.environ.get("POSTGRES_PASSWORD"),
-        'HOST': 'ft_transcendence-postgresql-1', 
+        'HOST': 'ft-transcendence-postgresql-1', 
         'PORT': '5432',
     }
 }

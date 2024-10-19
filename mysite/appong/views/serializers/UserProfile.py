@@ -17,7 +17,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 		model = UserProfile
 		read_only_fields = ['pk', 'friends_pending', 'friends_confirmed', 'avatar', 'last_access']
 		fields =	['pk', 'user', 'user_nick', 'avatar',
-					'friends_pending', 'friends_confirmed']
+					'friends_pending', 'friends_confirmed', 'last_access']
 
 	def create(self, validated_data):
 		return UserProfile.objects.create_userprofile(**validated_data)
