@@ -30,6 +30,7 @@ ALLOWED_HOSTS = [
     "127.0.0.1:" + str(os.environ.get("PORT")), # Used by docker for the healthcheck
     "127.0.0.1",
     "ft-transcendence-api-1.transcendence",
+    "ft-transcendence-api-1",
     os.environ.get("HOSTNAME"),
 ]
 

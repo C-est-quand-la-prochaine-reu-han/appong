@@ -12,7 +12,7 @@ from .serializers import MatchSerializer
 class MatchViewSet(ModelViewSet):
 	serializer_class = MatchSerializer
 	queryset = Match.objects.all()
-	permission_classes = [permissions.IsAuthenticated]#only logged in users can see data
+	permission_classes = [permissions.IsAuthenticated] # Only logged in users can see data
 
 	def create(self, request, *args, **kwargs):
 		serializer = self.get_serializer(data=request.data)
@@ -25,7 +25,7 @@ class MatchViewSet(ModelViewSet):
 		try:
 			serializer.save()
 		except IntegrityError as e:
-			return Response(e.message, status=status.HTTP_400_BAD_REQUEST)
+			return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
 		headers = self.get_success_headers(serializer.data)
 		return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
