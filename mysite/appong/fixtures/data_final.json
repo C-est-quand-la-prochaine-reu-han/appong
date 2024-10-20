@@ -18,40 +18,11 @@
         }
     },
     {
-        "model": "auth.user",
-        "pk": 2,
-        "fields": {
-          "password": "pbkdf2_sha256$870000$ymosKOO6I6zarxBlR6MuD1$nlpVFjQcjzipwNxQZSYitbf6vjnGFwaR9vl2qVZgYh8=",
-          "last_login": "2024-09-16T12:07:42.049Z",
-          "is_superuser": true,
-          "username": "CLI",
-          "first_name": "",
-          "last_name": "",
-          "email": "",
-          "is_staff": true,
-          "is_active": true,
-          "date_joined": "2024-09-06T14:00:35.207Z",
-          "groups": [],
-          "user_permissions": []
-        }
-    },
-    {
         "model": "appong.userprofile",
         "pk": 1,
         "fields": {
             "user": 1,
             "user_nick": "bot",
-            "avatar": "bot.jpg",
-            "friends_pending": [],
-            "friends_confirmed": []
-        }
-    },
-    {
-        "model": "appong.userprofile",
-        "pk": 2,
-        "fields": {
-            "user": 2,
-            "user_nick": "CLI",
             "avatar": "bot.jpg",
             "friends_pending": [],
             "friends_confirmed": []
