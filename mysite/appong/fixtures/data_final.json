@@ -61,18 +61,9 @@
         "model": "authtoken.token",
         "pk": 1,
         "fields": {
-            "key": "ThisIsASuperStrongAndSolidToken:3",
+            "key": "REPLACE_WITH_BOT_KEY",
             "created": "2001-06-23 06:44",
             "user_id": "1"
-        }
-    },
-    {
-        "model": "authtoken.token",
-        "pk": 2,
-        "fields": {
-            "key": "ThisIsATokenForTheCLIUser:3",
-            "created": "2001-06-23 06:44",
-            "user_id": "2"
         }
     }
 ]
