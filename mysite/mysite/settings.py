@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-3k!)tsq*k0aw@)--ff^1jnw^rwld*($qwqfkzk+r-$pv#5_!2j'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG")
+DEBUG = True # os.environ.get("DEBUG")
 
 ALLOWED_HOSTS = [
     "127.0.0.1:" + str(os.environ.get("PORT")), # Used by docker for the healthcheck
